@@ -1,0 +1,51 @@
+@startuml RepairService
+
+entity Client {
+  +id : int
+  name : varchar
+  phone : varchar
+  email : varchar
+}
+
+entity DeviceType {
+  +id : int
+  name : varchar
+}
+
+entity DeviceModel {
+  +id : int
+  name : varchar
+  device_type_id : int
+}
+
+entity Technician {
+  +id : int
+  name : varchar
+  specialization : varchar
+}
+
+entity TimeSlot {
+  +id : int
+  technician_id : int
+  start_time : timestamp
+  end_time : timestamp
+  is_available : boolean
+}
+
+entity ServiceRequest {
+  +id : int
+  client_id : int
+  device_model_id : int
+  slot_id : int
+  problem_description : text
+  status : varchar
+  created_at : timestamp
+}
+
+Client ||--o{ ServiceRequest
+DeviceType ||--o{ DeviceModel
+DeviceModel ||--o{ ServiceRequest
+Technician ||--o{ TimeSlot
+TimeSlot ||--|| ServiceRequest
+
+@enduml
