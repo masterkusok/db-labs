@@ -1,41 +1,43 @@
-CREATE TABLE clients (
+CREATE TABLE IF NOT EXISTS clients (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     phone VARCHAR(20),
-    email VARCHAR(100)
+    email VARCHAR(100) UNIQUE,
+    CONSTRAINT check_phone_not_empty CHECK (phone IS NULL OR LENGTH(phone) >= 10)
 );
 
-CREATE TABLE device_types (
+CREATE TABLE IF NOT EXISTS device_types (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE device_models (
+CREATE TABLE IF NOT EXISTS device_models (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    device_type_id INT REFERENCES device_types(id)
+    device_type_id INT NOT NULL REFERENCES device_types(id) ON DELETE RESTRICT,
 );
 
-CREATE TABLE technicians (
+CREATE TABLE IF NOT EXISTS technicians (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     specialization VARCHAR(100)
 );
 
-CREATE TABLE time_slots (
+CREATE TABLE IF NOT EXISTS time_slots (
     id SERIAL PRIMARY KEY,
-    technician_id INT REFERENCES technicians(id),
+    technician_id INT NOT NULL REFERENCES technicians(id) ON DELETE CASCADE,
     start_time TIMESTAMP NOT NULL,
     end_time TIMESTAMP NOT NULL,
-    is_available BOOLEAN DEFAULT TRUE
+    is_available BOOLEAN DEFAULT TRUE,
+    CONSTRAINT check_time_order CHECK (end_time > start_time),
 );
 
-CREATE TABLE service_requests (
+CREATE TABLE IF NOT EXISTS service_requests (
     id SERIAL PRIMARY KEY,
-    client_id INT REFERENCES clients(id),
-    device_model_id INT REFERENCES device_models(id),
-    slot_id INT REFERENCES time_slots(id),
-    problem_description TEXT,
+    client_id INT NOT NULL REFERENCES clients(id) ON DELETE RESTRICT,
+    device_model_id INT NOT NULL REFERENCES device_models(id) ON DELETE RESTRICT,
+    slot_id INT REFERENCES time_slots(id) ON DELETE SET NULL,
+    problem_description TEXT NOT NULL,
     status VARCHAR(50),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 );
