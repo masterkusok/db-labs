@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS clients (
     name VARCHAR(100) NOT NULL,
     phone VARCHAR(20),
     email VARCHAR(100) UNIQUE,
-    CONSTRAINT check_phone_not_empty CHECK (phone IS NULL OR LENGTH(phone) >= 10)
+    CONSTRAINT check_phone_length CHECK (phone IS NULL OR LENGTH(phone) >= 10)
 );
 
 CREATE TABLE IF NOT EXISTS device_types (
@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS device_models (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     device_type_id INT NOT NULL REFERENCES device_types(id) ON DELETE RESTRICT,
+    CONSTRAINT unique_model_per_type UNIQUE (name, device_type_id)
 );
 
 CREATE TABLE IF NOT EXISTS technicians (
@@ -29,7 +30,7 @@ CREATE TABLE IF NOT EXISTS time_slots (
     start_time TIMESTAMP NOT NULL,
     end_time TIMESTAMP NOT NULL,
     is_available BOOLEAN DEFAULT TRUE,
-    CONSTRAINT check_time_order CHECK (end_time > start_time),
+    CONSTRAINT check_time_order CHECK (end_time > start_time)
 );
 
 CREATE TABLE IF NOT EXISTS service_requests (
@@ -38,6 +39,7 @@ CREATE TABLE IF NOT EXISTS service_requests (
     device_model_id INT NOT NULL REFERENCES device_models(id) ON DELETE RESTRICT,
     slot_id INT REFERENCES time_slots(id) ON DELETE SET NULL,
     problem_description TEXT NOT NULL,
-    status VARCHAR(50),
+    status VARCHAR(50) DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT check_status CHECK (status IN ('pending', 'in_progress', 'completed', 'cancelled'))
 );
