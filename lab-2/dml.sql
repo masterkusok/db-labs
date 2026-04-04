@@ -1,22 +1,14 @@
--- ========================================
--- ПРОСТЫЕ DML-ОПЕРАЦИИ
--- ========================================
-
--- 1. Вставка новых записей
--- Добавление нового клиента
+-- add.
+-- add client.
 INSERT INTO clients (name, phone, email) 
 VALUES ('Федоров Игорь', '+79991234567', 'fedorov@mail.ru');
 
--- Добавление нового типа устройства и модели
+-- add new device.
 INSERT INTO device_types (name) VALUES ('Игровая консоль');
 INSERT INTO device_models (name, device_type_id) 
 VALUES ('PlayStation 5', (SELECT id FROM device_types WHERE name = 'Игровая консоль'));
 
--- Добавление нового техника
-INSERT INTO technicians (name, specialization) 
-VALUES ('Егорова Светлана', 'Игровые устройства');
-
--- Добавление временного слота для нового техника
+-- add new time slot.
 INSERT INTO time_slots (technician_id, start_time, end_time, is_available)
 VALUES (
     (SELECT id FROM technicians WHERE name = 'Егорова Светлана'),
@@ -25,7 +17,7 @@ VALUES (
     TRUE
 );
 
--- Добавление новой заявки
+-- add new request.
 INSERT INTO service_requests (client_id, device_model_id, problem_description, status)
 VALUES (
     (SELECT id FROM clients WHERE email = 'fedorov@mail.ru'),
@@ -35,38 +27,29 @@ VALUES (
 );
 
 
--- 2. Обновление существующих записей
--- Обновление статуса заявки
+-- update
+--- update request status
 UPDATE service_requests 
 SET status = 'in_progress', slot_id = 2
 WHERE id = 5;
 
--- Обновление доступности временного слота
+-- update time_slot availavility
 UPDATE time_slots 
 SET is_available = FALSE 
 WHERE id = 2;
 
--- Обновление контактных данных клиента
+-- update client data
 UPDATE clients 
 SET phone = '+79991112233', email = 'ivanov_new@mail.ru'
 WHERE name = 'Иванов Иван';
 
--- Изменение специализации техника
-UPDATE technicians 
-SET specialization = 'Смартфоны и планшеты'
-WHERE name = 'Кузнецов Сергей';
-
-
--- 3. Удаление записей
--- Удаление отмененной заявки
+-- delete data.
 DELETE FROM service_requests 
 WHERE status = 'cancelled';
 
--- Удаление старых свободных слотов
 DELETE FROM time_slots 
 WHERE is_available = TRUE AND end_time < '2026-04-10 00:00:00';
 
--- Удаление клиента без заявок
 DELETE FROM clients 
 WHERE id NOT IN (SELECT DISTINCT client_id FROM service_requests)
 AND email = 'novikova@yandex.ru';

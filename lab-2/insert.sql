@@ -1,4 +1,3 @@
--- Клиенты
 INSERT INTO clients (name, phone, email) VALUES
 ('Иванов Иван', '+79161234567', 'ivanov@mail.ru'),
 ('Петрова Мария', '+79267654321', 'petrova@gmail.com'),
@@ -9,7 +8,6 @@ INSERT INTO clients (name, phone, email) VALUES
 ('Морозов Дмитрий', '+79165556677', 'morozov@mail.ru'),
 ('Волкова Ольга', '+79268889900', 'volkova@gmail.com');
 
--- Типы устройств
 INSERT INTO device_types (name) VALUES
 ('Смартфон'),
 ('Ноутбук'),
@@ -17,7 +15,6 @@ INSERT INTO device_types (name) VALUES
 ('Умные часы'),
 ('Наушники');
 
--- Модели устройств
 INSERT INTO device_models (name, device_type_id) VALUES
 ('iPhone 14', 1),
 ('Samsung Galaxy S23', 1),
@@ -30,14 +27,12 @@ INSERT INTO device_models (name, device_type_id) VALUES
 ('Apple Watch Series 8', 4),
 ('AirPods Pro', 5);
 
--- Техники
 INSERT INTO technicians (name, specialization) VALUES
 ('Кузнецов Сергей', 'Смартфоны'),
 ('Лебедев Андрей', 'Ноутбуки'),
 ('Соколова Татьяна', 'Планшеты'),
 ('Попов Николай', 'Универсал');
 
--- Временные слоты
 INSERT INTO time_slots (technician_id, start_time, end_time, is_available) VALUES
 (1, '2026-04-02 09:00:00', '2026-04-02 11:00:00', FALSE),
 (1, '2026-04-08 14:00:00', '2026-04-08 16:00:00', TRUE),
@@ -50,7 +45,6 @@ INSERT INTO time_slots (technician_id, start_time, end_time, is_available) VALUE
 (4, '2026-04-07 08:00:00', '2026-04-07 10:00:00', FALSE),
 (4, '2026-04-25 16:00:00', '2026-04-25 18:00:00', TRUE);
 
--- Заявки на обслуживание
 INSERT INTO service_requests (client_id, device_model_id, slot_id, problem_description, status) VALUES
 (1, 1, 1, 'Не включается экран', 'in_progress'),
 (2, 4, 4, 'Перегревается при работе', 'in_progress'),
